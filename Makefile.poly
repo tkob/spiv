@@ -1,0 +1,28 @@
+FILES = \
+smlnj-lib/Util/utf8-sig.sml \
+smlnj-lib/Util/utf8.sml \
+ml-lpt/lib/stream-pos.sml \
+ml-lpt/lib/antlr-lexer-sig.sml \
+ml-lpt/lib/antlr-tokens-sig.sml \
+ml-lpt/lib/ebnf.sml \
+ml-lpt/lib/repair.sml \
+ml-lpt/lib/ulex-buffer.sml \
+ml-lpt/lib/wrapped-strm.sml \
+ltlsyntax.sml \
+ltllex.ulex.sml \
+main.sml
+
+main: ltlsyntax.sml ltllex.ulex.sml main.sml 
+	expect -f polybuild.tcl $(FILES)
+	polyc -o main a.o
+
+debug: ltlsyntax.sml ltllex.ulex.sml main.sml 
+	env DEBUG=1 expect -f polybuild.tcl $(FILES)
+
+ltllex.ulex.sml: ltllex.ulex
+	ml-ulex ltllex.ulex
+
+clean:
+	rm -f main
+	rm -f *.o
+	rm -f ltllex.ulex.sml

@@ -1,0 +1,31 @@
+token RArrow "->" ;
+token And "&" ;
+token Or "|" ;
+token U "U" ;
+token R "R" ;
+token W "W" ;
+token Not "!" ;
+token X "X" ;
+token F "F" ;
+token G "G" ;
+token True "true" ;
+token False "false" ;
+token LParen "(" ;
+token RParen ")" ;
+token Ident of string ;
+
+FImp.       Formula  ::= Formula "->" Formula1 ; 
+FAnd.       Formula1 ::= Formula1 "&" Formula2 ; 
+FOr.        Formula1 ::= Formula1 "|" Formula2 ; 
+FUntil.     Formula2 ::= Formula1 "U" Formula3 ; 
+FRelease.   Formula2 ::= Formula1 "R" Formula3 ; 
+FWeakUntil. Formula2 ::= Formula1 "W" Formula3 ; 
+FNeg.       Formula3 ::= "!" Formula3 ; 
+FNext.      Formula3 ::= "X" Formula3 ; 
+FFuture.    Formula3 ::= "F" Formula3 ; 
+FGlobal.    Formula3 ::= "G" Formula3 ; 
+FAtom.      Formula3 ::= Ident ; 
+FTop.       Formula3 ::= "true" ;
+FBottom.    Formula3 ::= "false" ;
+
+coercions Formula 3 ;
