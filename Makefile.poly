@@ -10,6 +10,7 @@ ml-lpt/lib/ulex-buffer.sml \
 ml-lpt/lib/wrapped-strm.sml \
 ltlsyntax.sml \
 ltllex.ulex.sml \
+parse.sml \
 main.sml
 
 main: ltlsyntax.sml ltllex.ulex.sml main.sml 
