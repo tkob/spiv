@@ -38,6 +38,26 @@ structure LTLConv = struct
     | mem (x, y::ys) = if x = y then true else mem (x, ys)
   fun union ([], ys) = ys
     | union (x::xs, ys) = if mem (x, ys) then ys else union (xs, x::ys)
+  (* 'a list -> 'a list list *)
+  fun subsets [] = [[]]
+    | subsets [x] = [[x], []]
+    | subsets (x::xs) =
+        let
+          val subsets' = subsets xs
+          fun addX xs = x::xs
+          val subsets'' = map addX subsets'
+        in
+          subsets'' @ subsets'
+        end
+  fun isSubset (xs, ys) =
+        List.all (fn x => mem (x, ys)) xs
+  fun maximal (xs, yss) =
+        let
+          fun pred ys = not (isSubset (xs, ys)) orelse xs = ys
+        in
+          List.all pred yss
+        end
+
   (* formula -> formula list *)
   fun closure (g as Imp (f1, f2)) =
         g::Neg (g)::(union (closure f1, closure f2))
