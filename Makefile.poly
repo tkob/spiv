@@ -11,6 +11,8 @@ ml-lpt/lib/wrapped-strm.sml \
 ltlsyntax.sml \
 ltllex.ulex.sml \
 parse.sml \
+ltl.sml \
+ltlconv.sml \
 main.sml
 
 main: ltlsyntax.sml ltllex.ulex.sml main.sml 
