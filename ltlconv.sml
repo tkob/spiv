@@ -75,4 +75,58 @@ structure LTLConv = struct
     | closure Bottom = [Top, Bottom]
     | closure f = raise Fail ("unsimplified formula: " ^ LTL.show f)
 
+  (* formula list -> formula list list *)
+  fun subsets closure =
+        let
+          fun nonNegated (Neg _) = false
+            | nonNegated _ = true
+          val powerSets = powerSets closure
+          fun consistent fs =
+                let
+                  fun containsFormulaOrComplementButNotBoth f =
+                        let
+                          val a = mem (f, fs)
+                          val b = mem (negate f, fs)
+                        in
+                          (a orelse b) andalso not (a andalso b)
+                        end
+                  fun consistentAboutBoolean (f as Imp (f1, f2)) =
+                        let
+                          val a = mem (f, fs)
+                          val b = not (mem (f1, fs)) orelse mem (f2, fs)
+                        in
+                          (not a orelse b) andalso (not b orelse a)
+                        end
+                    | consistentAboutBoolean (f as And (f1, f2)) =
+                        let
+                          val a = mem (f, fs)
+                          val b = mem (f1, fs) andalso mem (f2, fs)
+                        in
+                          (not a orelse b) andalso (not b orelse a)
+                        end
+                    | consistentAboutBoolean (f as Or (f1, f2) )=
+                        let
+                          val a = mem (f, fs)
+                          val b = mem (f1, fs) orelse mem (f2, fs)
+                        in
+                          (not a orelse b) andalso (not b orelse a)
+                        end
+                    | consistentAboutBoolean _ = true
+                  fun consistentAboutUntil (Until (f1, f2)) =
+                        mem (f1, fs) orelse mem (f2, fs)
+                    | consistentAboutUntil (Neg (Until (f1, f2))) =
+                        mem (negate f2, fs)
+                    | consistentAboutUntil _ = true
+                in
+                  List.all
+                    containsFormulaOrComplementButNotBoth
+                    (List.filter nonNegated closure)
+                  andalso
+                  List.all consistentAboutBoolean closure
+                  andalso
+                  List.all consistentAboutUntil fs
+                end
+        in
+          List.filter consistent powerSets
+        end
 end
