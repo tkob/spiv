@@ -13,6 +13,10 @@ structure LTL = struct
   | Atom of string
   | Top
   | Bottom
+
+  fun negate (Neg f) = f
+    | negate f = Neg f
+
   fun show (Imp (f0, f1)) =
       "(" ^ show f0 ^ " -> " ^ show f1 ^ ")"
     | show (And (f0, f1)) =
