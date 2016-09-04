@@ -66,4 +66,20 @@ structure LTLConv = struct
     | mem (x, y::ys) = if x == y then true else mem (x, ys)
   fun union ([], ys) = ys
     | union (x::xs, ys) = if mem (x, ys) then ys else union (xs, x::ys)
+
+  fun closure (g as FImp (span, f1, f2)) =
+        g::FNeg (span, g)::(union (closure f1, closure f2))
+    | closure (g as FAnd (span, f1, f2)) =
+        g::FNeg (span, g)::(union (closure f1, closure f2))
+    | closure (g as FOr (span, f1, f2)) =
+        g::FNeg (span, g)::(union (closure f1, closure f2))
+    | closure (g as FUntil (span, f1, f2)) =
+        g::FNeg (span, g)::(union (closure f1, closure f2))
+    | closure (g as FNext (span, f)) =
+        g::FNeg (span, g)::closure f
+    | closure (FNeg (span, f)) = closure f
+    | closure (atom as FAtom (span, _)) = [atom, FNeg (span, atom)]
+    | closure (FTop (span)) = [FTop span, FBottom span]
+    | closure (FBottom (span)) = [FTop span, FBottom span]
+    | closure f = raise Fail ("unsimplified formula: " ^ showFormula f)
 end
