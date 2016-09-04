@@ -39,15 +39,15 @@ structure LTLConv = struct
   fun union ([], ys) = ys
     | union (x::xs, ys) = if mem (x, ys) then ys else union (xs, x::ys)
   (* 'a list -> 'a list list *)
-  fun subsets [] = [[]]
-    | subsets [x] = [[x], []]
-    | subsets (x::xs) =
+  fun powerSets [] = [[]]
+    | powerSets [x] = [[x], []]
+    | powerSets (x::xs) =
         let
-          val subsets' = subsets xs
+          val powerSets' = powerSets xs
           fun addX xs = x::xs
-          val subsets'' = map addX subsets'
+          val powerSets'' = map addX powerSets'
         in
-          subsets'' @ subsets'
+          powerSets'' @ powerSets'
         end
   fun isSubset (xs, ys) =
         List.all (fn x => mem (x, ys)) xs
