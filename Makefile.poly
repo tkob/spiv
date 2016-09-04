@@ -15,7 +15,7 @@ ltl.sml \
 ltlconv.sml \
 main.sml
 
-main: ltlsyntax.sml ltllex.ulex.sml main.sml 
+main: $(FILES)
 	expect -f polybuild.tcl $(FILES)
 	polyc -o main a.o
 
