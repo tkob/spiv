@@ -129,4 +129,13 @@ structure LTLConv = struct
         in
           List.filter consistent powerSets
         end
+
+  (* 'a list -> ('a * 'a) list *)
+  fun allPairs xs =
+        let
+          fun pairOf a b = (a, b)
+          fun flatMap f l = List.concat (map f l)
+        in
+          flatMap (fn x => map (pairOf x) xs) xs
+        end
 end
