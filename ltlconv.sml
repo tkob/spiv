@@ -75,8 +75,9 @@ structure LTLConv = struct
     | closure Bottom = [Top, Bottom]
     | closure f = raise Fail ("unsimplified formula: " ^ LTL.show f)
 
-  (* formula list -> formula list list *)
-  fun subsets closure =
+  type state = formula list
+
+  fun subsets (closure : formula list) : state list =
         let
           fun nonNegated (Neg _) = false
             | nonNegated _ = true
