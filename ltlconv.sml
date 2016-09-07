@@ -139,4 +139,45 @@ structure LTLConv = struct
         in
           flatMap (fn x => map (pairOf x) xs) xs
         end
+
+  type transition = state * state
+
+  fun transitions (states : state list) : transition list =
+        let
+          val allPairs = allPairs states
+          fun next (q, q') =
+                let
+                  fun f (Next formula) = mem (formula, q')
+                    | f _ = true
+                in
+                  List.all f q
+                end
+          fun notNext (q, q') =
+                let
+                  fun f (Neg (Next formula)) = not (mem (formula, q'))
+                    | f _ = true
+                in
+                  List.all f q
+                end
+          fun until (q, q') =
+                let
+                  fun f (g as Until (f1, f2)) =
+                        if not (mem (f2, q)) then mem (g, q') else true
+                    | f _ = true
+                in
+                  List.all f q
+                end
+          fun notUntil (q, q') =
+                let
+                  fun f (g as Neg (Until (f1, f2))) =
+                        if mem (f1, q) then mem (g, q') else true
+                    | f _ = true
+                in
+                  List.all f q
+                end
+          fun validTransition d =
+                next d andalso notNext d andalso until d andalso notUntil d
+        in
+          List.filter validTransition allPairs
+        end
 end
