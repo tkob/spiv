@@ -1,7 +1,7 @@
 structure Automaton = struct
   type ''a automaton = { states : ''a list, transitions : (''a * ''a) list }
 
-  fun printDot printState (automaton : ''a automaton) =
+  fun printDot showState (automaton : ''a automaton) =
         let
           val count = ref 1
           fun gensym () = "q" ^ Int.toString (!count) before count := !count + 1
@@ -15,7 +15,7 @@ structure Automaton = struct
           fun printLabel state = (
                 print (lookupName (state, namesAndStates));
                 print " [label = \"";
-                printState state;
+                print (showState state);
                 print "\"];\n";
                 ())
           fun printTransition (q1, q2) = (
