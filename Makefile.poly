@@ -12,7 +12,9 @@ ltlsyntax.sml \
 ltllex.ulex.sml \
 parse.sml \
 ltl.sml \
+symbol.sml \
 ltlconv.sml \
+automaton.sml \
 main.sml
 
 main: $(FILES)
