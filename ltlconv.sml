@@ -75,9 +75,15 @@ structure LTLConv = struct
     | closure Bottom = [Top, Bottom]
     | closure f = raise Fail ("unsimplified formula: " ^ LTL.show f)
 
-  type state = formula list
+  type state = Symbol.t
 
-  fun subsets (closure : formula list) : state list =
+  type dict = (state * formula list) list
+  fun lookup (key, []) = raise Fail ""
+    | lookup (key', (key, value)::dict) =
+        if key = key' then value
+        else lookup (key', dict)
+
+  fun subsets (closure : formula list) : state list * dict =
         let
           fun nonNegated (Neg _) = false
             | nonNegated _ = true
@@ -127,8 +133,16 @@ structure LTLConv = struct
                   andalso
                   List.all consistentAboutUntil fs
                 end
+          fun makeDict ([], states, dict) = (states, dict)
+            | makeDict (fs::fss, states, dict) =
+                let
+                  val sym = Symbol.gensym ()
+                in
+                  makeDict (fss, sym::states, (sym, fs)::dict)
+                end
+          val consistentStates = List.filter consistent powerSets
         in
-          List.filter consistent powerSets
+          makeDict (consistentStates, [], [])
         end
 
   (* 'a list -> ('a * 'a) list *)
@@ -142,7 +156,7 @@ structure LTLConv = struct
 
   type transition = state * state
 
-  fun transitions (states : state list) : transition list =
+  fun transitions (dict : dict) (states : state list) : transition list =
         let
           val allPairs = allPairs states
           fun next (q, q') =
@@ -175,8 +189,14 @@ structure LTLConv = struct
                 in
                   List.all f q
                 end
-          fun validTransition d =
-                next d andalso notNext d andalso until d andalso notUntil d
+          fun validTransition (sym1, sym2) =
+                let
+                  val q = lookup (sym1, dict)
+                  val q' = lookup (sym2, dict)
+                  val d = (q, q')
+                in
+                  next d andalso notNext d andalso until d andalso notUntil d
+                end
         in
           List.filter validTransition allPairs
         end
