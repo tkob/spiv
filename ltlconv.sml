@@ -18,8 +18,8 @@ structure LTLConv = struct
           val f1' = simplify f1
           val f2' = simplify f2
         in
-          (* p W q = p U q | G p *)
-          Or (Until (f1', f2'), simplify (Global (f1')))
+          (* p W q = (p U q | G p) = (p U q | ~(true U ~p))  *)
+          Or (Until (f1', f2'), Neg (Until (Top, Neg f1')))
         end
     | simplify (Neg  (f)) = Neg  (simplify f)
     | simplify (Next (f)) = Next (simplify f)
