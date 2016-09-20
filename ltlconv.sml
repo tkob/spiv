@@ -29,7 +29,7 @@ structure LTLConv = struct
     | simplify (Global (f)) =
         (* G p = false release p = ~(true U ~p)
            ``It is not the case that sometime p does not hold'' *)
-        Neg (Until (Top, Neg(f)))
+        Neg (Until (Top, Neg (simplify f)))
     | simplify (Atom (ident)) = Atom (ident)
     | simplify Top = Top
     | simplify Bottom = Bottom
