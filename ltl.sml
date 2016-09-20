@@ -30,9 +30,9 @@ structure LTL = struct
     | show (WeakUntil (f0, f1)) =
       "(" ^ show f0 ^ " W " ^ show f1 ^ ")"
     | show (Neg f) = "(!" ^ show f ^ ")"
-    | show (Next f) = "(X" ^ show f ^ ")"
-    | show (Future f) = "(F" ^ show f ^ ")"
-    | show (Global f) = "(G" ^ show f ^ ")"
+    | show (Next f) = "(X " ^ show f ^ ")"
+    | show (Future f) = "(F " ^ show f ^ ")"
+    | show (Global f) = "(G " ^ show f ^ ")"
     | show (Atom ident) = ident
     | show Top = "true"
     | show Bottom = "false"
